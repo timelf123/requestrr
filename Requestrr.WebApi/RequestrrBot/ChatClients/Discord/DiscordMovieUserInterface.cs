@@ -81,8 +81,8 @@ namespace Requestrr.WebApi.RequestrrBot.ChatClients.Discord
                 .WithTitle($"{movie.Title} {(!string.IsNullOrWhiteSpace(movie.ReleaseDate) && movie.ReleaseDate.Length >= 4 ? $"({movie.ReleaseDate.Split("T")[0].Substring(0, 4)})" : string.Empty)}")
                 .WithTimestamp(DateTime.Now)
                 .WithUrl($"https://www.themoviedb.org/movie/{movie.TheMovieDbId}")
-                .WithThumbnail("https://i.imgur.com/44ueTES.png")
-                .WithFooter("Powered by Requestrr");
+                .WithThumbnail("https://crios.app/assets/img/icon.png")
+                .WithFooter("Patreon Perk");
 
             if (!string.IsNullOrWhiteSpace(movie.Overview))
             {
