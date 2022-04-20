@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '14'
       - run: cd Requestrr.WebApi/ClientApp && rm -rf package-lock.json && npm install && npm build
-      - run: cd Requestrr.WebApi && dotnet publish -c release -o publish -r linux-x64
+      - run: cd Requestrr.WebApi && CI=false dotnet publish -c release -o publish -r linux-x64
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v1
         with:
