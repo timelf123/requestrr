@@ -7,12 +7,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            ghcr.io/crios-app/requestrr
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.x'
@@ -32,4 +26,6 @@ jobs:
         with:
           context: ./Requestrr.WebApi
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ghcr.io/crios-app/requestrr:latest
+            ghcr.io/crios-app/requestrr:${{ github.sha }}
