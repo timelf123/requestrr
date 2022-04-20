@@ -19,8 +19,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - run: cd Requestarr.WebApi/ClientApp && rm -rf package-lock.json && npm install && npm build
-      - run: cd Requestarr.WebApi && dotnet publish -c release -o publish -r linux-x64
+      - run: cd Requestrr.WebApi/ClientApp && rm -rf package-lock.json && npm install && npm build
+      - run: cd Requestrr.WebApi && dotnet publish -c release -o publish -r linux-x64
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -30,6 +30,6 @@ jobs:
       - name: Build 
         uses: docker/build-push-action@v2
         with:
-          context: ./Requestarr.WebApi
+          context: ./Requestrr.WebApi
           push: true
           tags: ${{ steps.meta.outputs.tags }}
