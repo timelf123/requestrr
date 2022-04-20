@@ -1,0 +1,35 @@
+name: docker-build
+on: [ push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/crios-app/requestrr
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: cd Requestarr.WebApi/ClientApp && rm -rf package-lock.json && npm install && npm build
+      - run: cd Requestarr.WebApi && dotnet publish -c release -o publish -r linux-x64
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build 
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Requestarr.WebApi
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
