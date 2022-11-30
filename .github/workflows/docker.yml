@@ -1,6 +1,9 @@
 name: docker-build
 on: [ push, workflow_dispatch]
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,13 +25,11 @@ jobs:
           node-version: '14'
       - run: cd Requestrr.WebApi/ClientApp && rm -rf package-lock.json && npm install && npm build
       - run: cd Requestrr.WebApi && CI=false dotnet publish -c release -o publish -r linux-x64
-      -
-        name: Login to GitHub Container Registry
-        #if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push
