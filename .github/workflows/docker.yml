@@ -15,17 +15,30 @@ jobs:
           node-version: '14'
       - run: cd Requestrr.WebApi/ClientApp && rm -rf package-lock.json && npm install && npm build
       - run: cd Requestrr.WebApi && CI=false dotnet publish -c release -o publish -r linux-x64
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build 
-        uses: docker/build-push-action@v2
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
         with:
-          context: ./Requestrr.WebApi
+          context: .
+          tag_with_sha: true
+#           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/crios-app/requestrr:latest
-            ghcr.io/crios-app/requestrr:${{ github.sha }}
+#           tags: |
+#             timelf123/requestrr:latest
+#             timelf123/requestrr:1.0.0
+#             ghcr.io/timelf123/requestrr:latest
+#             ghcr.io/timelf123/requestrr:1.0.0
+#       - name: Build container
+#         uses: docker/build-push-action@v2
+#         with:
+#           username: timelf123
+#           password: ${{ secrets.GITHUB_TOKEN }}
+#           registry: docker.pkg.github.com
+#           tag_with_sha: true
