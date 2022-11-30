@@ -7,6 +7,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            timelf123/requestrr
+          tags: |
+            type=ref,event=tag
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.x'
@@ -17,6 +26,7 @@ jobs:
       - run: cd Requestrr.WebApi && CI=false dotnet publish -c release -o publish -r linux-x64
       -
         name: Login to GitHub Container Registry
+        #if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -27,18 +37,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          tag_with_sha: true
-#           platforms: linux/amd64,linux/arm64
-          push: true
-#           tags: |
-#             timelf123/requestrr:latest
-#             timelf123/requestrr:1.0.0
-#             ghcr.io/timelf123/requestrr:latest
-#             ghcr.io/timelf123/requestrr:1.0.0
-#       - name: Build container
-#         uses: docker/build-push-action@v2
-#         with:
-#           username: timelf123
-#           password: ${{ secrets.GITHUB_TOKEN }}
-#           registry: docker.pkg.github.com
-#           tag_with_sha: true
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
